@@ -17,8 +17,8 @@ app.post('/voice', (req, res) => {
     method: 'POST'
   });
 
-  gather.say('Hola. Gracias por responder esta llamada. Vamos a hacerte una breve encuesta.');
-  gather.say('Primera pregunta. ¿Te interesa empezar un curso este mes? Presiona 1 para sí, 2 para no.');
+  gather.say({ language: 'es-CL', voice: 'female' }, 'Hola. Gracias por responder esta llamada. Vamos a hacerte una breve encuesta.');
+  gather.say({ language: 'es-CL', voice: 'female' }, 'Primera pregunta. ¿Te interesa empezar un curso este mes? Presiona 1 para sí, 2 para no.');
 
   res.type('text/xml');
   res.send(twiml.toString());
@@ -36,9 +36,9 @@ app.post('/question1', (req, res) => {
       method: 'POST'
     });
 
-    gather.say('Excelente. Segunda pregunta. ¿Tienes el presupuesto para comenzar? Presiona 1 para sí, 2 para no.');
+    gather.say({ language: 'es-CL', voice: 'female' }, 'Excelente. Segunda pregunta. ¿Tienes el presupuesto para comenzar? Presiona 1 para sí, 2 para no.');
   } else {
-    twiml.say('Gracias por tu tiempo. Hasta luego.');
+    twiml.say({ language: 'es-CL', voice: 'female' }, 'Gracias por tu tiempo. Hasta luego.');
     twiml.hangup();
   }
 
@@ -51,8 +51,7 @@ app.post('/question2', (req, res) => {
   const digit = req.body.Digits;
   const twiml = new VoiceResponse();
 
-  // Aquí podrías guardar las respuestas en una base de datos si lo deseas
-  twiml.say('Gracias por tus respuestas. Un asesor se pondrá en contacto contigo pronto.');
+  twiml.say({ language: 'es-CL', voice: 'female' }, 'Gracias por tus respuestas. Un asesor se pondrá en contacto contigo pronto.');
   twiml.hangup();
 
   res.type('text/xml');
