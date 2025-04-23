@@ -16,6 +16,7 @@ client.calls.create({
   to: toPhoneNumber,
   from: fromPhoneNumber,
   url: 'https://llamada-jb81.onrender.com'  // La URL que Render te da
+  method: 'POST'
 })
 .then(call => console.log('Llamada realizada:', call.sid))
 .catch(err => console.error('Error al hacer la llamada:', err));
