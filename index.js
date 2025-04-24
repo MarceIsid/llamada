@@ -11,15 +11,16 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.post('/voice', (req, res) => {
   const twiml = new VoiceResponse();
 
-  // Primer Gather: recopilamos la respuesta a la primera pregunta
+  // Decimos la introducción SIN gather
+  twiml.say({ language: 'es-ES', voice: 'woman' }, 'Hola. Gracias por responder esta llamada. Vamos a hacerte una breve encuesta.');
+
+  // Ahora sí hacemos gather solo para la pregunta
   const gather = twiml.gather({
     numDigits: 1,
     action: '/question1', // Ruta para procesar la respuesta de la primera pregunta
     method: 'POST'
   });
 
-  // Mensajes que la llamada dirá
-  gather.say({ language: 'es-ES', voice: 'woman' }, 'Hola. Gracias por responder esta llamada. Vamos a hacerte una breve encuesta.');
   gather.say({ language: 'es-ES', voice: 'woman' }, 'Primera pregunta. ¿Te interesa empezar un curso este mes? Presiona 1 para sí, 2 para no.');
 
   res.type('text/xml');
@@ -28,11 +29,11 @@ app.post('/voice', (req, res) => {
 
 // Ruta para la respuesta a la primera pregunta
 app.post('/question1', (req, res) => {
-  const digit = req.body.Digits; // Leemos el dígito ingresado
+  const digit = req.body.Digits;
   const twiml = new VoiceResponse();
 
   if (digit === '1') {
-    // Si respondió '1', vamos a hacer la segunda pregunta
+    // Si respondió '1', hacemos la segunda pregunta
     const gather = twiml.gather({
       numDigits: 1,
       action: '/question2',
@@ -55,7 +56,7 @@ app.post('/question2', (req, res) => {
   const digit = req.body.Digits;
   const twiml = new VoiceResponse();
 
-  // Guardamos la respuesta, luego agradecemos y colgamos
+  // Agradecemos y finalizamos
   twiml.say({ language: 'es-ES', voice: 'woman' }, 'Gracias por tus respuestas. Un asesor se pondrá en contacto contigo pronto.');
   twiml.hangup();
 
