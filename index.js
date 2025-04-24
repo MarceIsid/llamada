@@ -12,16 +12,18 @@ app.post('/voice', (req, res) => {
   const twiml = new VoiceResponse();
 
   // Mensaje inicial: se reproduce inmediatamente al contestar
-  twiml.say({ language: 'es-MX', voice: 'woman' }, 'Hola. Gracias por responder esta llamada. Vamos a hacerte una breve encuesta.');
+  twiml.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Hola. Gracias por responder esta llamada. Vamos a hacerte una breve encuesta.');
 
-  // Luego viene la primera pregunta dentro de gather
+  // Primera pregunta con reconocimiento de voz
   const gather = twiml.gather({
-    numDigits: 1,
+    input: 'speech',
+    language: 'es-MX',
     action: '/question1',
-    method: 'POST'
+    method: 'POST',
+    timeout: 5
   });
 
-  gather.say({ language: 'es-MX', voice: 'woman' }, 'Primera pregunta. ¿Te interesa empezar un curso este mes? Presiona 1 para sí, 2 para no.');
+  gather.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Primera pregunta. ¿Te interesa empezar un curso este mes? Puedes responder sí o no.');
 
   res.type('text/xml');
   res.send(twiml.toString());
@@ -29,20 +31,21 @@ app.post('/voice', (req, res) => {
 
 // Ruta para la respuesta a la primera pregunta
 app.post('/question1', (req, res) => {
-  const digit = req.body.Digits;
+  const respuesta = (req.body.SpeechResult || '').toLowerCase();
   const twiml = new VoiceResponse();
 
-  if (digit === '1') {
-    // Mensaje fuera del gather (se reproduce inmediatamente)
+  if (respuesta.includes('sí')) {
     twiml.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Excelente.');
 
     const gather = twiml.gather({
-      numDigits: 1,
+      input: 'speech',
+      language: 'es-MX',
       action: '/question2',
-      method: 'POST'
+      method: 'POST',
+      timeout: 5
     });
 
-    gather.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Segunda pregunta. ¿Tienes el presupuesto para comenzar? Presiona 1 para sí, 2 para no.');
+    gather.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Segunda pregunta. ¿Tienes el presupuesto para comenzar? Puedes responder sí o no.');
   } else {
     twiml.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Gracias por tu tiempo. Hasta luego.');
     twiml.hangup();
@@ -54,6 +57,7 @@ app.post('/question1', (req, res) => {
 
 // Ruta para la respuesta a la segunda pregunta
 app.post('/question2', (req, res) => {
+  const respuesta = (req.body.SpeechResult || '').toLowerCase();
   const twiml = new VoiceResponse();
 
   twiml.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Gracias por tus respuestas. Un asesor se pondrá en contacto contigo pronto.');
