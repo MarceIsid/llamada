@@ -10,7 +10,7 @@ const client = new twilio(accountSid, authToken);
 const toPhoneNumber = '+56997292052';  // Número del cliente (verificado en Twilio)
 // Número de Twilio desde el cual llamar (debe ser tuyo)
 const fromPhoneNumber = '+18449241250';  // Tu número de Twilio
-const urlEncuesta = 'https://llamada-1.onrender.com/voice';
+const urlEncuesta = 'https://llamada-xrka.onrender.com/voice';
 
 // Hacer la llamada con Twilio
 client.calls.create({
