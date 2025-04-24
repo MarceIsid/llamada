@@ -11,10 +11,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.post('/voice', (req, res) => {
   const twiml = new VoiceResponse();
 
-  // Mensaje inicial: se reproduce inmediatamente al contestar
-  twiml.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Hola. Mi nombre es Marcela, ejecutiva virtual de gestion didactica. Gracias por responder esta llamada. Vamos a hacerte una breve encuesta.');
+  twiml.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Hola. Gracias por responder esta llamada. Vamos a hacerte una breve encuesta.');
 
-  // Primera pregunta con reconocimiento de voz
   const gather = twiml.gather({
     input: 'speech',
     language: 'es-MX',
@@ -25,11 +23,14 @@ app.post('/voice', (req, res) => {
 
   gather.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Primera pregunta. ¿Te interesa empezar un curso este mes? Puedes responder sí o no.');
 
+  // En caso de no responder
+  twiml.redirect('/voice');
+
   res.type('text/xml');
   res.send(twiml.toString());
 });
 
-// Ruta para la respuesta a la primera pregunta
+// Respuesta a la primera pregunta
 app.post('/question1', (req, res) => {
   const respuesta = (req.body.SpeechResult || '').toLowerCase();
   const twiml = new VoiceResponse();
@@ -46,6 +47,9 @@ app.post('/question1', (req, res) => {
     });
 
     gather.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Segunda pregunta. ¿Tienes el presupuesto para comenzar? Puedes responder sí o no.');
+
+    // Fallback si no contesta
+    twiml.redirect('/question1');
   } else {
     twiml.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Gracias por tu tiempo. Hasta luego.');
     twiml.hangup();
@@ -55,7 +59,7 @@ app.post('/question1', (req, res) => {
   res.send(twiml.toString());
 });
 
-// Ruta para la respuesta a la segunda pregunta
+// Respuesta a la segunda pregunta
 app.post('/question2', (req, res) => {
   const respuesta = (req.body.SpeechResult || '').toLowerCase();
   const twiml = new VoiceResponse();
@@ -68,5 +72,5 @@ app.post('/question2', (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Servidor de encuesta corriendo en http://localhost:${port}`);
+  console.log(`Servidor corriendo en http://localhost:${port}`);
 });
