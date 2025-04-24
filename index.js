@@ -12,7 +12,7 @@ app.post('/voice', (req, res) => {
   const twiml = new VoiceResponse();
 
   // Mensaje inicial: se reproduce inmediatamente al contestar
-  twiml.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Hola. Gracias por responder esta llamada. Vamos a hacerte una breve encuesta.');
+  twiml.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Hola. Mi nombre es Marcela, ejecutiva virtual de gestion didactica. Gracias por responder esta llamada. Vamos a hacerte una breve encuesta.');
 
   // Primera pregunta con reconocimiento de voz
   const gather = twiml.gather({
