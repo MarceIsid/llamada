@@ -11,23 +11,18 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.post('/voice', (req, res) => {
   const twiml = new VoiceResponse();
 
-  twiml.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Hola. Gracias por responder esta llamada. Vamos a hacerte una breve encuesta.');
+  twiml.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Hola. Mi nombre es Marcela, Ejecutiva virtual de gestion didactica Gracias por responder esta llamada. Vamos a hacerte una breve encuesta.');
 
   const gather = twiml.gather({
     input: 'speech',
     language: 'es-MX',
     action: '/question1',
     method: 'POST',
-    timeout: 2
+    timeout: 3
   });
 
-  gather.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Primera pregunta. ¿Te interesa empezar un curso este mes? Puedes responder sí o no.');
+  gather.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Primera pregunta. ¿Te interesa empezar un curso este mes? ');
 
-  // En caso de no responder
-  twiml.redirect('/voice');
-
-  res.type('text/xml');
-  res.send(twiml.toString());
 });
 
 // Respuesta a la primera pregunta
@@ -43,10 +38,10 @@ app.post('/question1', (req, res) => {
       language: 'es-MX',
       action: '/question2',
       method: 'POST',
-      timeout: 2
+      timeout: 3
     });
 
-    gather.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Segunda pregunta. ¿Tienes el presupuesto para comenzar? Puedes responder sí o no.');
+    gather.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Segunda pregunta. ¿Tienes el presupuesto para comenzar?');
 
     // Fallback si no contesta
     twiml.redirect('/question1');
