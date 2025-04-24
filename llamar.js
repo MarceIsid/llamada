@@ -10,12 +10,13 @@ const client = new twilio(accountSid, authToken);
 const toPhoneNumber = '+56997292052';  // Número del cliente (verificado en Twilio)
 // Número de Twilio desde el cual llamar (debe ser tuyo)
 const fromPhoneNumber = '+18449241250';  // Tu número de Twilio
+const urlEncuesta = 'https://llamada-jb81.onrender.com/voice';
 
 // Hacer la llamada con Twilio
 client.calls.create({
   to: toPhoneNumber,
   from: fromPhoneNumber,
-  url: 'https://llamada-jb81.onrender.com/voice',  // Asegúrate de usar /voice aquí
+  url: urlEncuesta,  // Asegúrate de usar /voice aquí
   method: 'POST'
 })
 .then(call => console.log('✅ Llamada realizada. SID:', call.sid))
