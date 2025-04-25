@@ -23,7 +23,7 @@ app.post('/voice', (req, res) => {
     language: 'es-MX',
     action: '/question1',
     method: 'POST',
-    timeout: 5
+    timeout: 2
   });
 
   gather.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Primera pregunta. ¿Te interesa empezar un curso este mes?');
@@ -45,7 +45,7 @@ app.post('/question1', (req, res) => {
       language: 'es-MX',
       action: '/question2',
       method: 'POST',
-      timeout: 5
+      timeout: 2
     });
 
     gather.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Segunda pregunta. ¿Tienes el presupuesto para comenzar?');
