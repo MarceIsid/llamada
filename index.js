@@ -45,7 +45,7 @@ app.post('/question1', (req, res) => {
       language: 'es-MX',
       action: '/question2',
       method: 'POST',
-      timeout: 2
+      timeout: 3
     });
 
     gather.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Segunda pregunta. ¿Tienes el presupuesto para comenzar?');
