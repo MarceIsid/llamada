@@ -104,7 +104,7 @@ function enviarRespuestasAN8N(callSid) {
     respuestas: lead
   };
 
-  axios.post('http://localhost:5678/webhook-test/webhook/leads-twilio', payload)
+  axios.post('http://localhost:5678/webhook/webhook/leads-twilio', payload)
     .then(() => console.log('✅ Respuestas enviadas a n8n'))
     .catch(err => console.error('❌ Error al enviar a n8n:', err));
 }
