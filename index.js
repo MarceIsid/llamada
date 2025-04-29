@@ -66,7 +66,7 @@ app.post('/question1', (req, res) => {
     gather.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Segunda pregunta. ¿Tienes el presupuesto para comenzar?');
   } else {
     leads[callSid].respuesta2 = 'no'; // Si no pasa a la siguiente pregunta, se asume no
-    calificarYEnviar(callSid);
+    enviarRespuestasAN8N(callSid);
 
     twiml.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Gracias por tu tiempo. Hasta luego.');
     twiml.hangup();
@@ -86,7 +86,7 @@ app.post('/question2', (req, res) => {
 
   leads[callSid].respuesta2 = respuesta;
 
-  calificarYEnviar(callSid);
+  enviarRespuestasAN8N(callSid);
 
   twiml.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Gracias por tus respuestas. Un asesor se pondrá en contacto contigo pronto.');
   twiml.hangup();
@@ -96,29 +96,17 @@ app.post('/question2', (req, res) => {
 });
 
 // Función para clasificar al lead y enviar a n8n
-function calificarYEnviar(callSid) {
+function enviarRespuestasAN8N(callSid) {
   const lead = leads[callSid];
-  if (!lead) return;
-
-  const r1 = lead.respuesta1?.includes('sí') || false;
-  const r2 = lead.respuesta2?.includes('sí') || false;
-
-  let categoria;
-  if (r1 && r2) categoria = 'A';
-  else if (r1 || r2) categoria = 'B';
-  else categoria = 'C';
 
   const payload = {
     callSid,
-    telefono: lead.telefono,
-    respuesta1: lead.respuesta1,
-    respuesta2: lead.respuesta2,
-    categoria
+    respuestas: lead
   };
 
-  axios.post('http://localhost:5678/webhook-test/webhook/leads-twilio', payload)
-    .then(() => console.log(`✅ Lead ${callSid} enviado a n8n como tipo ${categoria}`))
-    .catch(err => console.error('❌ Error al enviar lead a n8n:', err.message));
+  axios.post('https://TUSERVIDORN8N/webhook/leads-twilio', payload)
+    .then(() => console.log('✅ Respuestas enviadas a n8n'))
+    .catch(err => console.error('❌ Error al enviar a n8n:', err));
 }
 
 app.listen(port, () => {
