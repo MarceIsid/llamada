@@ -116,7 +116,7 @@ function calificarYEnviar(callSid) {
     categoria
   };
 
-  axios.post('http://localhost:5678/webhook/leads-twilio', payload)
+  axios.post('http://localhost:5678/webhook-test/webhook/leads-twilio', payload)
     .then(() => console.log(`✅ Lead ${callSid} enviado a n8n como tipo ${categoria}`))
     .catch(err => console.error('❌ Error al enviar lead a n8n:', err.message));
 }
