@@ -9,15 +9,25 @@ const client = new twilio(accountSid, authToken);
 // Número de teléfono del cliente (lead)
 const toPhoneNumber = '+56997292052';  // Número del cliente (verificado en Twilio)
 // Número de Twilio desde el cual llamar (debe ser tuyo)
-const fromPhoneNumber = '+18449241250';  // Tu número de Twilio
+const fromPhoneNumber = '+18449241250'; 
 const urlEncuesta = 'https://llamada-xrka.onrender.com/voice';
 
 // Hacer la llamada con Twilio
 client.calls.create({
   to: toPhoneNumber,
   from: fromPhoneNumber,
-  url: urlEncuesta,  // Asegúrate de usar /voice aquí
-  method: 'POST'
+  url: urlEncuesta,
+  method: 'POST',
+  
+  statusCallbackMethod: 'POST',
+  statusCallbackEvent: ['initiated', 'ringing', 'answered', 'completed']
 })
-.then(call => console.log('✅ Llamada realizada. SID:', call.sid))
-.catch(err => console.error('❌ Error al hacer la llamada:', err));
+.then(call => {
+  console.log('✅ Llamada realizada. SID:', call.sid);
+  console.log('📞 Número llamado:', toPhoneNumber);
+  console.log('📱 Número de origen:', fromPhoneNumber);
+})
+.catch(err => {
+  console.error('❌ Error al hacer la llamada:', err);
+  console.error('Detalles:', err.message);
+});
