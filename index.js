@@ -111,26 +111,27 @@ async function enviarLeadAN8N(callSid) {
     const payload = {
       callSid: lead.callSid,
       telefono: lead.telefono,
-      respuesta1: lead.respuesta1 || '',
-      respuesta2: lead.respuesta2 || '',
-      categoria: clasificarLead(lead.respuesta1, lead.respuesta2),
-      timestamp: lead.timestamp
+      respuesta1: lead.respuesta1 || '', // Asegura valor aunque sea vacío
+      respuesta2: lead.respuesta2 || '', // Asegura valor aunque sea vacío
+      timestamp: lead.timestamp || new Date().toISOString()
     };
 
-    console.log('Enviando lead a n8n:', payload);
+    console.log('Enviando a n8n:', JSON.stringify(payload, null, 2));
 
     const response = await axios.post(N8N_WEBHOOK_URL, payload, {
       timeout: 10000,
       headers: {
-        'Content-Type': 'application/json',
-        'X-API-Source': 'twilio-lead-classifier'
+        'Content-Type': 'application/json'
       }
     });
 
-    console.log('Lead clasificado como', payload.categoria);
     return response.data;
   } catch (error) {
-    console.error('Error al enviar lead:', error.message);
+    console.error('Error al enviar:', {
+      message: error.message,
+      requestData: payload, // Asegúrate de definir payload en el catch
+      responseData: error.response?.data
+    });
     throw error;
   }
 }
