@@ -41,7 +41,7 @@ app.post('/voice', (req, res) => {
   twiml.say({ 
     language: 'es-MX', 
     voice: 'Polly.Conchita' 
-  }, 'Hola. Gracias por responder esta llamada, te estamos llamando desde Gestion Didactica. ¿Te interesa empezar un curso este mes? Responde sí o no.');
+  }, 'Hola. Gracias por responder esta llamada, mi nombre es Marti, ejecutiva virtual de Jestion Didactica. ¿Te interesa empezar un curso este mes?.');
 
   const gather = twiml.gather({
     input: 'speech',
@@ -66,7 +66,7 @@ app.post('/question1', (req, res) => {
   const twiml = new VoiceResponse();
 
   if (respuesta.includes('sí') || respuesta.includes('si')) {
-    twiml.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Gracias. Segunda pregunta: ¿Tienes el presupuesto para comenzar? Responde sí o no.');
+    twiml.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Gracias. Segunda pregunta: ¿Tienes el presupuesto para comenzar? .');
 
     const gather = twiml.gather({
       input: 'speech',
