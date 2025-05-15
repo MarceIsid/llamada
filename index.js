@@ -29,11 +29,13 @@ const clasificarLead = (respuesta1, respuesta2) => {
 // Ruta para recibir llamadas de Twilio
 app.post('/voice', (req, res) => {
   const callSid = req.body.CallSid;
-  const phoneNumber = req.body.To || 'desconocido'; // Cambiado de From a To
+  const phoneNumber = req.body.To || 'desconocido';
+  const nombreCliente = req.body.nombre || 'Cliente';
 
   leads[callSid] = {
     callSid,
     telefono: phoneNumber,
+    nombre: nombreCliente,
     timestamp: new Date().toISOString()
   };
 
@@ -41,7 +43,7 @@ app.post('/voice', (req, res) => {
   twiml.say({ 
     language: 'es-MX', 
     voice: 'Polly.Conchita' 
-  }, 'Hola. Gracias por responder esta llamada, mi nombre es Marti, ejecutiva virtual de Jestion Didactica. ¿Te interesa empezar un curso este mes?.');
+  }, `Hola ${nombreCliente}. Gracias por responder esta llamada. Mi nombre es Marti, ejecutiva virtual de Gestión Didáctica. ¿Te interesa empezar un curso este mes?`);
 
   const gather = twiml.gather({
     input: 'speech',
