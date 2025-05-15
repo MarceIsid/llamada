@@ -29,13 +29,24 @@ const clasificarLead = (respuesta1, respuesta2) => {
 // Ruta para recibir llamadas de Twilio
 app.post('/voice', (req, res) => {
   const callSid = req.body.CallSid;
-  const phoneNumber = req.body.To || 'desconocido';
-  const nombreCliente = req.body.nombre || 'Cliente';
+  const phoneNumber = req.body.telefono_participante || 'desconocido';
+  const nombreCliente = req.body.nombre_participante || 'Cliente';
 
+  // Nuevos campos
+  const idCurso = req.body.id_curso || 'sin_curso';
+  const idParticipante = req.body.id_participante || 'sin_id';
+  const correoParticipante = req.body.correo_participante || 'sin_correo';
+  const estado = req.body.estado || 'pendiente';
+
+  // Guardar datos del lead
   leads[callSid] = {
     callSid,
     telefono: phoneNumber,
     nombre: nombreCliente,
+    idCurso,
+    idParticipante,
+    correo: correoParticipante,
+    estado,
     timestamp: new Date().toISOString()
   };
 
@@ -45,7 +56,7 @@ app.post('/voice', (req, res) => {
     voice: 'Polly.Conchita' 
   }, `Hola ${nombreCliente}. Gracias por responder esta llamada. Mi nombre es Marti, ejecutiva virtual de Gestión Didáctica. ¿Te interesa empezar un curso este mes?`);
 
-  const gather = twiml.gather({
+  twiml.gather({
     input: 'speech',
     language: 'es-MX',
     action: '/question1',
@@ -70,7 +81,7 @@ app.post('/question1', (req, res) => {
   if (respuesta.includes('sí') || respuesta.includes('si')) {
     twiml.say({ language: 'es-MX', voice: 'Polly.Conchita' }, 'Gracias. Segunda pregunta: ¿Tienes el presupuesto para comenzar? .');
 
-    const gather = twiml.gather({
+    twiml.gather({
       input: 'speech',
       language: 'es-MX',
       action: '/question2',
@@ -95,6 +106,7 @@ app.post('/question2', (req, res) => {
 
   if (!leads[callSid]) leads[callSid] = { callSid };
   leads[callSid].respuesta2 = respuesta;
+
   enviarLeadAN8N(callSid);
 
   const twiml = new VoiceResponse();
@@ -113,8 +125,13 @@ async function enviarLeadAN8N(callSid) {
     const payload = {
       callSid: lead.callSid,
       telefono: lead.telefono,
-      respuesta1: lead.respuesta1 || '', // Asegura valor aunque sea vacío
-      respuesta2: lead.respuesta2 || '', // Asegura valor aunque sea vacío
+      nombre: lead.nombre,
+      id_curso: lead.idCurso,
+      id_participante: lead.idParticipante,
+      correo: lead.correo,
+      estado: lead.estado,
+      respuesta1: lead.respuesta1 || '',
+      respuesta2: lead.respuesta2 || '',
       timestamp: lead.timestamp || new Date().toISOString()
     };
 
@@ -131,7 +148,7 @@ async function enviarLeadAN8N(callSid) {
   } catch (error) {
     console.error('Error al enviar:', {
       message: error.message,
-      requestData: payload, // Asegúrate de definir payload en el catch
+      requestData: payload,
       responseData: error.response?.data
     });
     throw error;
