@@ -29,24 +29,12 @@ const clasificarLead = (respuesta1, respuesta2) => {
 // Ruta para recibir llamadas de Twilio
 app.post('/voice', (req, res) => {
   const callSid = req.body.CallSid;
-  const phoneNumber = req.body.telefono_participante || 'desconocido';
-  const nombreCliente = req.body.nombre_participante || 'Cliente';
+  const nombreCliente = req.query.nombre || 'Cliente';
 
-  // Nuevos campos
-  const idCurso = req.body.id_curso || 'sin_curso';
-  const idParticipante = req.body.id_participante || 'sin_id';
-  const correoParticipante = req.body.correo_participante || 'sin_correo';
-  const estado = req.body.estado || 'pendiente';
-
-  // Guardar datos del lead
+  // Registro del lead
   leads[callSid] = {
     callSid,
-    telefono: phoneNumber,
     nombre: nombreCliente,
-    idCurso,
-    idParticipante,
-    correo: correoParticipante,
-    estado,
     timestamp: new Date().toISOString()
   };
 
@@ -56,7 +44,7 @@ app.post('/voice', (req, res) => {
     voice: 'Polly.Conchita' 
   }, `Hola ${nombreCliente}. Gracias por responder esta llamada. Mi nombre es Marti, ejecutiva virtual de Gestión Didáctica. ¿Te interesa empezar un curso este mes?`);
 
-  twiml.gather({
+  const gather = twiml.gather({
     input: 'speech',
     language: 'es-MX',
     action: '/question1',
@@ -124,12 +112,11 @@ async function enviarLeadAN8N(callSid) {
 
     const payload = {
       callSid: lead.callSid,
-      telefono: lead.telefono,
-      nombre: lead.nombre,
+      telefono_participante: lead.telefono,
+      nombre_participante: lead.nombre,
       id_curso: lead.idCurso,
       id_participante: lead.idParticipante,
       correo: lead.correo,
-      estado: lead.estado,
       respuesta1: lead.respuesta1 || '',
       respuesta2: lead.respuesta2 || '',
       timestamp: lead.timestamp || new Date().toISOString()
